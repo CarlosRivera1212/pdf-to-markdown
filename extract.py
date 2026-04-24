@@ -31,7 +31,7 @@ class PDFExtractor(ABC):
 
     def setup_logging(self):
         """Set up logging configuration."""
-        log_dir = Path(__file__).parent / "logs"
+        log_dir = Path(config["LOG_DIR"])
         log_dir.mkdir(parents=True, exist_ok=True)
         log_file = log_dir / f"{Path(__file__).stem}.log"
 
@@ -159,7 +159,7 @@ class MarkdownPDFExtractor(PDFExtractor):
                     table_index += 1
 
                 markdown_pages.append(self.post_process_markdown(page_content))
-                markdown_content += page_content + config["PAGE_DELIMITER"]
+                markdown_content += page_content + config["PAGE_DELIMITER"] + "\n"
 
             markdown_content = self.post_process_markdown(markdown_content)
             return markdown_content, markdown_pages
@@ -561,7 +561,7 @@ class MarkdownPDFExtractor(PDFExtractor):
                 f"{self.pdf_filename}_image_{int(page.number)+1}_{block['number']}.png"
             )
             image_path = (
-                Path(config["OUTPUT_DIR"]) / image_filename
+                Path(config["OUTPUT_IMG_DIR"]) / image_filename
             )  # Convert to Path object
             image.save(image_path, "PNG", optimize=True, quality=95)
 
